@@ -1,0 +1,114 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY {
+  globalAuthRule: AuthRule = { allow: public }
+} # FOR TESTING ONLY!
+type Review {
+  name: String
+  rating: Float
+  comment: String
+  user: ID
+  createdAt: String
+  updatedAt: String
+}
+
+type Photo {
+  url: String
+  publicId: String
+}
+
+type Product @model {
+  name: String!
+  photo: [Photo]
+  categories: [String]
+  color: String
+  description: String
+  reviews: [Review]
+  rating: Float
+  numReviews: Int
+  price: Float!
+  priceMayor: Float
+  countInStock: Int
+  createdAt: String
+  type: String
+    @index(
+      name: "ProductsByDate"
+      queryField: "ProductsByDate"
+      sortKeyFields: ["createdAt"]
+    )
+  updatedAt: String
+  inOffer: Boolean
+  discountPercentage: Float
+  bestSellers: Boolean
+  status: String
+}
+
+type Categories @model {
+  id: ID!
+  categoryName: String
+  showInCarousel: Boolean
+  bgColor: String
+  photo: [Photo]
+}
+
+type User @model {
+  id: ID!
+  fullName: String
+  profilePicture: String
+  email: String
+  phoneNumber: String
+}
+
+type Order @model {
+  idUserFilter: String!
+  user: UserOrder
+  orderItems: [OrderItem]
+  shippingAddress: ShippingAddress
+  paymentMethod: String
+  paymentResult: PaymentResult
+  taxPrice: Float
+  shippingPrice: Float
+  totalPrice: Float
+  isPaid: Boolean
+  paidAt: String
+  isDelivered: Boolean
+  deliveredAt: String
+  # createdAt: String
+  # updatedAt: String
+}
+
+type OrderItem {
+  name: String
+  qty: Int
+  image: String
+  price: Float
+  id: ID!
+}
+
+type ShippingAddress {
+  address: String
+  city: String
+  postalCode: String
+  country: String
+}
+
+type PaymentResult {
+  id: String
+  status: String
+  updateTime: String
+  emailAddress: String
+}
+
+type UserOrder {
+  id: ID
+  name: String
+  email: String
+  phoneNumber: String
+}
+
+type Settings @model {
+  id: ID!
+  storeName: String
+  logoImage: [Photo]
+  coverImage: [Photo]
+}
