@@ -100,8 +100,11 @@ export async function newProduct({
 export async function getProducts() {
   const res = await client.graphql({
     query: listProducts,
-    variables: {},
-    // filter: { status: { notContains: "Borrador" } },
+    variables: {
+      filter: {
+        borrador: { ne: true },
+      },
+    },
   });
 
   return res.data.listProducts.items;
@@ -229,6 +232,7 @@ export async function ListProductsByDate() {
       limit: 10,
       filter: {
         countInStock: { gt: 0 }, // 👈 Filtra solo productos con stock mayor a 0
+        borrador: { ne: true },
       },
     },
   });

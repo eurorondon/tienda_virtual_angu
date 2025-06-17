@@ -35,7 +35,7 @@ const Filter = ({ name, bgColor }) => {
           query: listProducts,
           variables: {
             limit: 200,
-            filter: { categories: { contains: name } },
+            filter: { categories: { contains: name }, borrador: { ne: true } },
             // nextToken: pageParam,
           },
         });
@@ -59,7 +59,8 @@ const Filter = ({ name, bgColor }) => {
   );
 
   const productList = data?.items?.filter(
-    (product) => product.status !== "Borrador"
+    // (product) => product.status !== "Borrador"
+    (product) => product.status !== "true"
   );
 
   const sliderRef = useRef(null);

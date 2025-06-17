@@ -43,7 +43,8 @@ function DestacadosScreen() {
 
   const products = data?.pages.flat();
   const productList = products?.filter(
-    (product) => product.status !== "Borrador"
+    // (product) => product.status !== "Borrador"
+    (product) => product.borrador !== true
   );
 
   return (

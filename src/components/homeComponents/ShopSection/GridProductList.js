@@ -41,7 +41,8 @@ const GridProductList = () => {
         const filter = {
           ...(category ? { categories: { contains: category } } : {}),
           ...(search ? { name: { contains: search } } : {}),
-          countInStock: { gt: 0 }, // <-- Aquí se aplica el filtro de stock
+          countInStock: { gt: 0 },
+          borrador: { ne: true }, // <-- Aquí se aplica el filtro de stock
         };
 
         const productsData = await client.graphql({
@@ -79,7 +80,8 @@ const GridProductList = () => {
   const products =
     data?.pages
       .reduce((prevProducts, page) => prevProducts.concat(page.items), [])
-      .filter((product) => product.status !== "Borrador") ?? [];
+      // .filter((product) => product.status !== "Borrador") ?? [];
+      .filter((product) => product.status !== "true") ?? [];
 
   const handleNavigate = (id) => {
     window.scroll(0, 0);

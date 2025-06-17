@@ -15,12 +15,14 @@ const NewProducts = () => {
     ListProductsByDate({
       filter: {
         countInStock: { gt: 0 },
+        borrador: { ne: true },
       },
     })
   );
 
   const productList = data?.filter(
-    (products) => products.status !== "Borrador"
+    // (products) => products.status !== "Borrador"
+    (products) => products.status !== "true"
   );
   // const productList = data?.items?.filter((product) => product.status !== "Borrador");
   const sliderRef = useRef(null);

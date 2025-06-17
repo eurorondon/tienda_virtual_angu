@@ -21,7 +21,8 @@ const Ofertas = () => {
     getProductsInOfert
   );
 
-  const productList = data?.filter((product) => product.status !== "Borrador");
+  // const productList = data?.filter((product) => product.status !== "Borrador");
+  const productList = data?.filter((product) => product.borrador !== true);
   const sliderRef = useRef(null);
 
   if (isLoading) return null;

@@ -97,6 +97,7 @@ const GridProductSearch = () => {
           ...(category ? { categories: { contains: category } } : {}),
           ...(search ? { name: { contains: search } } : {}),
           countInStock: { gt: 0 }, // <-- Aquí se aplica el filtro de stock
+          borrador: { ne: true },
         };
 
         const productsData = await client.graphql({
@@ -126,7 +127,8 @@ const GridProductSearch = () => {
     ) ?? [];
 
   const productsList = products.filter(
-    (product) => product.status !== "Borrador"
+    // (product) => product.status !== "Borrador"
+    (product) => product.status !== "true"
   );
 
   const handleNavigate = (id) => {

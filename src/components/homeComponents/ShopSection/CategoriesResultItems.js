@@ -93,7 +93,8 @@ const CategoriesResultItemes = () => {
         const filter = {
           ...(category ? { categories: { contains: category } } : {}),
           ...(search ? { name: { contains: search } } : {}),
-          countInStock: { gt: 0 }, // <-- Aquí se aplica el filtro de stock
+          countInStock: { gt: 0 },
+          borrador: { ne: true }, // <-- Aquí se aplica el filtro de stock
         };
 
         const productsData = await client.graphql({
@@ -123,7 +124,8 @@ const CategoriesResultItemes = () => {
     ) ?? [];
 
   const productsList = products.filter(
-    (product) => product.status !== "Borrador"
+    // (product) => product.status !== "Borrador"
+    (product) => product.status !== "true"
   );
 
   const handleNavigate = (id) => {
