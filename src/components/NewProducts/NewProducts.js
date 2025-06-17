@@ -13,16 +13,17 @@ import { Colors } from "../../utils/colors";
 const NewProducts = () => {
   const { data, isLoading, isError } = useQuery(["NewProducts"], () =>
     ListProductsByDate({
-      filter: {
-        countInStock: { gt: 0 },
-        borrador: { ne: true },
-      },
+      // filter: {
+      //   countInStock: { gt: 0 },
+      // },
     })
   );
 
+  console.log("data", data);
+
+  // Filtro manual aplicado a la data
   const productList = data?.filter(
-    // (products) => products.status !== "Borrador"
-    (products) => products.status !== "true"
+    (product) => product.countInStock > 0 && product.borrador !== true
   );
   // const productList = data?.items?.filter((product) => product.status !== "Borrador");
   const sliderRef = useRef(null);

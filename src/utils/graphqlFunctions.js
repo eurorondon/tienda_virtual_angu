@@ -229,10 +229,9 @@ export async function ListProductsByDate() {
     variables: {
       type: "Producto",
       sortDirection: "DESC",
-      limit: 10,
+      limit: 50,
       filter: {
         countInStock: { gt: 0 }, // 👈 Filtra solo productos con stock mayor a 0
-        borrador: { ne: true },
       },
     },
   });
