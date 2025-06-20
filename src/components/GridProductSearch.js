@@ -103,7 +103,7 @@ const GridProductSearch = () => {
         const productsData = await client.graphql({
           query: listProducts,
           variables: {
-            limit: 6,
+            limit: 200,
             filter,
             nextToken: pageParam,
           },
@@ -119,6 +119,8 @@ const GridProductSearch = () => {
       getNextPageParam: (lastPage) => lastPage?.nextToken || null,
     }
   );
+
+  console.log("data", data);
 
   const products =
     data?.pages.reduce(

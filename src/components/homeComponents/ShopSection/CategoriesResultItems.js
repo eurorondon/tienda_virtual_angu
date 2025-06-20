@@ -100,7 +100,7 @@ const CategoriesResultItemes = () => {
         const productsData = await client.graphql({
           query: listProducts,
           variables: {
-            limit: 6,
+            limit: 200,
             filter,
             nextToken: pageParam,
           },

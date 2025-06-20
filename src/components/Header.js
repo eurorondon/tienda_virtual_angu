@@ -127,7 +127,9 @@ const Header = () => {
                         type="search"
                         className="form-control rounded-left search"
                         placeholder="Buscar..."
-                        onChange={(e) => setSearchInput(e.target.value)}
+                        onChange={(e) =>
+                          setSearchInput(e.target.value.toLowerCase())
+                        }
                         style={{
                           borderTopLeftRadius: "50px",
                           borderBottomLeftRadius: "50px",
@@ -194,7 +196,9 @@ const Header = () => {
                       type="search"
                       className="form-control rounded-left search"
                       placeholder="Buscar..."
-                      onChange={(e) => setSearchInput(e.target.value)}
+                      onChange={(e) =>
+                        setSearchInput(e.target.value.toLowerCase())
+                      }
                       style={{
                         borderTopLeftRadius: "50px",
                         borderBottomLeftRadius: "50px",
