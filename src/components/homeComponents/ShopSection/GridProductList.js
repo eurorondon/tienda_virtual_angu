@@ -186,6 +186,8 @@ const GridProductList = () => {
                       priceMayor={product.priceMayor}
                       offer={product.inOffer}
                       discountPercentage={product.discountPercentage}
+                      tasaParalelo={138} // o la variable que tengas
+                      tasaOficial={103} // o la variable que tengas
                     />
                   </div>
                 </div>
