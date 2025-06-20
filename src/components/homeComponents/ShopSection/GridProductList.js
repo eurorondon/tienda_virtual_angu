@@ -1,17 +1,18 @@
 import React from "react";
 import Product from "./ProductGrid";
 import { Link, useNavigate } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Loading from "../../Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/api";
-import { listProducts } from "../../../graphql/queries";
+import { getExchangeRate, listProducts } from "../../../graphql/queries";
 import amplifyconfig from "../../../amplifyconfiguration.json";
 import { useParams } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { Package2Icon as Package2X } from "lucide-react";
+import { getRate } from "../../../utils/graphqlFunctions";
 
 Amplify.configure(amplifyconfig);
 const client = generateClient();
@@ -23,6 +24,32 @@ const GridProductList = () => {
   const navigate = useNavigate();
 
   const { category, search } = useParams();
+
+  // ✅ OPCIÓN 1: Usar React Query (Recomendado)
+  const {
+    data: exchangeRateData,
+    isLoading: ratesLoading,
+    isError: ratesError,
+    error: ratesErrorDetails,
+  } = useQuery({
+    queryKey: ["exchange-rates", "main"],
+    queryFn: () => getRate("main"),
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    cacheTime: 10 * 60 * 1000, // 10 minutos
+    retry: 2,
+    // Valores por defecto en caso de error
+    onError: (error) => {
+      console.error("Error cargando tasas:", error);
+    },
+  });
+
+  console.log("exchangeRateData", exchangeRateData);
+
+  // ✅ Obtener valores con fallback
+  const currentRates = {
+    tasaOficial: exchangeRateData?.tasaOficial || 36.5,
+    tasaParalelo: exchangeRateData?.tasaParalelo || 45.2,
+  };
 
   const {
     data,
@@ -74,8 +101,6 @@ const GridProductList = () => {
   //     (prevProducts, page) => prevProducts.concat(page.items),
   //     []
   //   ) ?? [];
-
-  console.log(data);
 
   const products =
     data?.pages
@@ -186,8 +211,8 @@ const GridProductList = () => {
                       priceMayor={product.priceMayor}
                       offer={product.inOffer}
                       discountPercentage={product.discountPercentage}
-                      tasaParalelo={138} // o la variable que tengas
-                      tasaOficial={103} // o la variable que tengas
+                      tasaParalelo={currentRates.tasaParalelo}
+                      tasaOficial={currentRates.tasaOficial}
                     />
                   </div>
                 </div>

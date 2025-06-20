@@ -4,10 +4,12 @@ import amplifyconfig from "../aws-exports";
 
 import {
   ProductsByDate,
+  getExchangeRate,
   getOrder,
   getProduct,
   getUser,
   listCategories,
+  listExchangeRates,
   listOrders,
   listProducts,
   listReviews,
@@ -394,4 +396,51 @@ export async function crearReviewYActualizarProducto({
   });
 
   return reviewRes.data.createReview;
+}
+
+// ✅ Función para obtener una tasa específica (NUEVA)
+export async function getRate(id) {
+  try {
+    const result = await client.graphql({
+      query: getExchangeRate,
+      variables: { id },
+    });
+    return result.data.getExchangeRate;
+  } catch (error) {
+    console.error("Error obteniendo tasa:", error);
+    throw error;
+  }
+}
+
+// ✅ Función para listar todas las tasas (NUEVA)
+export async function listRates(filter = null, limit = 100, nextToken = null) {
+  try {
+    const result = await client.graphql({
+      query: listExchangeRates,
+      variables: {
+        filter,
+        limit,
+        nextToken,
+      },
+    });
+    return result.data.listExchangeRates;
+  } catch (error) {
+    console.error("Error listando tasas:", error);
+    throw error;
+  }
+}
+
+// ✅ Función para obtener la tasa del BCV desde la API externa (NUEVA)
+export async function fetchBCVRate() {
+  try {
+    const response = await fetch("https://pydolarve.org/api/v2/dollar");
+    if (!response.ok) {
+      throw new Error("Error al obtener datos de la API");
+    }
+    const data = await response.json();
+    return data.monitors.bcv.price;
+  } catch (error) {
+    console.error("Error fetching BCV rate:", error);
+    throw error;
+  }
 }

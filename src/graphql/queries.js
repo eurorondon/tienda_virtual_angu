@@ -1,6 +1,42 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getExchangeRate = /* GraphQL */ `
+  query GetExchangeRate($id: ID!) {
+    getExchangeRate(id: $id) {
+      id
+      tasaOficial
+      tasaParalelo
+      fuenteParalelo
+      fuenteOficial
+      updatedAt
+      __typename
+    }
+  }
+`;
+
+export const listExchangeRates = /* GraphQL */ `
+  query ListExchangeRates(
+    $filter: ModelExchangeRateFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listExchangeRates(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        tasaOficial
+        tasaParalelo
+        fuenteParalelo
+        fuenteOficial
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+
 export const getReview = /* GraphQL */ `
   query GetReview($id: ID!) {
     getReview(id: $id) {
