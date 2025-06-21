@@ -1,70 +1,83 @@
 import { Colors } from "../../utils/colors";
 
 export default function Product(props) {
-  const MAX_TITLE_LENGTH = 17; // El número máximo de caracteres permitidos en el título
-  const MAX_DESCRIPTION_LENGTH = 40; // El número máximo de caracteres permitidos en la descripción\
+  const {
+    name,
+    description,
+    price,
+    priceMayor,
+    url,
+    offer,
+    discountPercentage,
+    tasaParalelo,
+    tasaOficial,
+  } = props;
 
   const capitalizeFirstLetter = (str) => {
-    if (str.length === 0) return str;
+    if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+
+  const getAjustado = (valor) => ((valor ?? 0) * tasaParalelo) / tasaOficial;
+
+  const precioConDescuento = price - price * (discountPercentage / 100);
+  const precioAjustado = getAjustado(price);
+  const precioMayorAjustado =
+    priceMayor && priceMayor !== 0 ? getAjustado(priceMayor) : null;
+  const precioConDescuentoAjustado = getAjustado(precioConDescuento);
+
   return (
     <div
-      className=" card  text-start  "
+      className="card text-start"
       style={{ borderRadius: "10px", minHeight: "10rem", marginLeft: "1px" }}
     >
-      {/* <div className="mx-auto" style={{ maxWidth: "14rem" }}>
-        <img
-          className="mx-auto"
-          src={props.url}
-          alt="product image"
+      {offer && (
+        <div
           style={{
-            width: "95%",
-            height: "150px",
-            objectFit: "scale-down",
+            width: "40px",
+            height: "40px",
+            backgroundColor: "yellow",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: "50%",
+            position: "absolute",
+            top: "5px",
+            left: "5px",
           }}
-        />
-      </div> */}
+        >
+          <span style={{ fontSize: "15px" }}>{`${discountPercentage}%`}</span>
+        </div>
+      )}
+
       <div
-        className=" d-flex justify-content-center align-items-center  "
+        className="d-flex justify-content-center align-items-center"
         style={{ width: "100%" }}
       >
-        {props.url ? (
+        {url ? (
           <>
+            {/* Móvil */}
             <img
               className="mx-auto d-md-none"
-              src={props.url}
-              alt="product "
-              // style={{
-              //   width: "100%",
-              //   // height: "150px",
-              //   objectFit: "scale-down",
-              //   borderTopLeftRadius: "5px",
-              //   borderTopRightRadius: "5px",
-              // }}
+              src={url}
+              alt="product"
               style={{
                 width: "100%",
-                height: "150px", // Fijar altura para uniformidad
-                objectFit: "cover", // Recorta la imagen para llenar el contenedor sin distorsión
+                height: "150px",
+                objectFit: "cover",
                 borderTopLeftRadius: "5px",
                 borderTopRightRadius: "5px",
               }}
             />
+            {/* Desktop */}
             <img
-              className="mx-auto d-none d-md-block  "
-              src={props.url}
-              alt="product "
-              // style={{
-              //   width: "100%",
-              //   // height: "150px",
-              //   objectFit: "scale-down",
-              //   borderTopLeftRadius: "5px",
-              //   borderTopRightRadius: "5px",
-              // }}
+              className="mx-auto d-none d-md-block"
+              src={url}
+              alt="product"
               style={{
                 width: "100%",
-                height: "200px", // Fijar altura para uniformidad
-                objectFit: "cover", // Recorta la imagen para llenar el contenedor sin distorsión
+                height: "200px",
+                objectFit: "cover",
                 borderTopLeftRadius: "5px",
                 borderTopRightRadius: "5px",
               }}
@@ -72,48 +85,56 @@ export default function Product(props) {
           </>
         ) : (
           <img
-            src={
-              "https://img.freepik.com/vector-premium/vector-icono-imagen-predeterminado-pagina-imagen-faltante-diseno-sitio-web-o-aplicacion-movil-no-hay-foto-disponible_87543-11093.jpg"
-            }
-            width={"100%"}
-            // height={180}
+            src="https://img.freepik.com/vector-premium/vector-icono-imagen-predeterminado-pagina-imagen-faltante-diseno-sitio-web-o-aplicacion-movil-no-hay-foto-disponible_87543-11093.jpg"
+            width="100%"
             alt="Product"
             className="rounded-md"
           />
         )}
       </div>
 
-      <div className="p-2" style={{ backgroundColor: "" }}>
-        <h5 className="name" style={{ fontWeight: "bold", color: "" }}>
-          {capitalizeFirstLetter(props.name)}
+      <div className="p-2">
+        <h5 className="name" style={{ fontWeight: "bold" }}>
+          {capitalizeFirstLetter(name)}
         </h5>
-        {/* <div
-          className=""
-          // style={
-          //   window.innerWidth > 767 ? { height: "50px" } : { height: "40px" }
-          // }
-        >
-          {props.description ? (
-            <p className="description">
-              {props.description.length > MAX_DESCRIPTION_LENGTH
-                ? props.description.substring(0, MAX_DESCRIPTION_LENGTH) + "..."
-                : props.description}
-            </p>
-          ) : (
-            <p className="description"> Sin Descripcion</p>
-          )}
-        </div> */}
 
-        <p className="" style={{ color: "", fontSize: "0.9rem" }}>
-          Detal:{" "}
-          <span style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
-            {props.price} $
-          </span>
-        </p>
-        {props.priceMayor > 0 && props.priceMayor !== null && (
-          <p className="" style={{ color: "", fontSize: "0.9rem" }}>
-            Mayor: <span style={{}}>{props.priceMayor} $</span>
-          </p>
+        {offer ? (
+          <>
+            <p style={{ fontWeight: "bold" }}>
+              {precioConDescuentoAjustado.toFixed(2)} ${" "}
+              <small style={{ fontSize: "0.75rem", color: "gray" }}>
+                (ajustado)
+              </small>
+            </p>
+            <p
+              style={{
+                textDecoration: "line-through",
+                fontSize: "0.8rem",
+                color: "gray",
+              }}
+            >
+              {precioAjustado.toFixed(2)} $
+            </p>
+            {precioMayorAjustado && (
+              <p style={{ fontSize: "0.85rem" }}>
+                Mayor: {precioMayorAjustado.toFixed(2)} $
+              </p>
+            )}
+          </>
+        ) : (
+          <>
+            <p style={{ fontSize: "1rem", fontWeight: "bold" }}>
+              Detal: {precioAjustado.toFixed(2)} ${" "}
+              <small style={{ fontSize: "0.75rem", color: "gray" }}>
+                (ajustado)
+              </small>
+            </p>
+            {precioMayorAjustado && (
+              <p style={{ fontSize: "0.85rem" }}>
+                Mayor: {precioMayorAjustado.toFixed(2)} $
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>

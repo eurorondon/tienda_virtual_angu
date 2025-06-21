@@ -19,6 +19,7 @@ import Message from "../components/Message";
 import Rating from "../components/Rating";
 import {
   crearReviewYActualizarProducto,
+  getRate,
   getReviews,
   newReview,
 } from "../utils/graphqlFunctions";
@@ -78,6 +79,33 @@ const SingleProduct = ({ match }) => {
 
   Amplify.configure(amplifyconfig);
   const client = generateClient();
+
+  // ✅ OPCIÓN 1: Usar React Query (Recomendado)
+  const {
+    data: exchangeRateData,
+    isLoading: ratesLoading,
+    isError: ratesError,
+    error: ratesErrorDetails,
+  } = useQuery({
+    queryKey: ["exchange-rates", "main"],
+    queryFn: () => getRate("main"),
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    cacheTime: 10 * 60 * 1000, // 10 minutos
+    retry: 2,
+    // Valores por defecto en caso de error
+    onError: (error) => {
+      console.error("Error cargando tasas:", error);
+    },
+  });
+
+  // ✅ Obtener valores con fallback
+  const currentRates = {
+    tasaOficial: exchangeRateData?.tasaOficial || 36.5,
+    tasaParalelo: exchangeRateData?.tasaParalelo || 45.2,
+  };
+
+  const getAjustado = (valor) =>
+    ((valor ?? 0) * currentRates.tasaParalelo) / currentRates.tasaOficial;
 
   async function obtenerUsuarioActual() {
     try {
@@ -214,6 +242,12 @@ const SingleProduct = ({ match }) => {
     setQty(newQty); // Actualizar el estado qty
   };
 
+  const handleWhatsAppChat = () => {
+    const phoneNumber = "+584126773234";
+    const url = `https://wa.me/${phoneNumber.replace(/\D/g, "")}`;
+    window.open(url, "_blank"); // Abrir en una nueva pestaña
+  };
+
   // enviamos los datos extraídos de la API a REDUX
   // useEffect(() => {
   //   if (data) {
@@ -317,11 +351,13 @@ const SingleProduct = ({ match }) => {
                   <div className="product-count col-lg-9   border rounded p-3 ">
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Precio al Detal</h6>
-                      <span>${product?.price}</span>
+                      <span>${getAjustado(product?.price).toFixed(2)}</span>
                     </div>
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Precio al Mayor</h6>
-                      <span>${product?.priceMayor}</span>
+                      <span>
+                        ${getAjustado(product?.priceMayor).toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Estado</h6>
@@ -338,7 +374,7 @@ const SingleProduct = ({ match }) => {
                         text={`${product?.numReviews || 0} reseñas`}
                       />
                     </div>
-                    {product?.countInStock > 0 ? (
+                    {/* {product?.countInStock > 0 ? (
                       <>
                         <div className="flex-box d-flex justify-content-between align-items-center">
                           <h6>
@@ -367,7 +403,13 @@ const SingleProduct = ({ match }) => {
                           Añadir al Carrito
                         </button>
                       </>
-                    ) : null}
+                    ) : null} */}
+                    <button
+                      onClick={handleWhatsAppChat}
+                      className="round-black-btn"
+                    >
+                      Contactar por Whatsapp
+                    </button>
                   </div>
                 </div>
               </div>
@@ -551,11 +593,13 @@ const SingleProduct = ({ match }) => {
                   <div className="product-count col-lg-9   border rounded p-3 ">
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Precio al Detal</h6>
-                      <span>${product?.price}</span>
+                      <span>${getAjustado(product?.price).toFixed(2)}</span>
                     </div>
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Precio al Mayor</h6>
-                      <span>${product?.priceMayor}</span>
+                      <span>
+                        ${getAjustado(product?.priceMayor).toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>Estado</h6>
@@ -572,7 +616,7 @@ const SingleProduct = ({ match }) => {
                         text={`${product?.numReviews || 0} reseñas`}
                       />
                     </div>
-                    {product?.countInStock > 0 ? (
+                    {/* {product?.countInStock > 0 ? (
                       <>
                         <div className="flex-box d-flex justify-content-between align-items-center">
                           <h6>
@@ -601,7 +645,13 @@ const SingleProduct = ({ match }) => {
                           Añadir al Carrito
                         </button>
                       </>
-                    ) : null}
+                    ) : null} */}
+                    <button
+                      onClick={handleWhatsAppChat}
+                      className="round-black-btn"
+                    >
+                      Contactar por Whatsapp
+                    </button>
                   </div>
                 </div>
               </div>

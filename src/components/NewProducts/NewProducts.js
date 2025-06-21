@@ -7,7 +7,11 @@ import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import Product from "../NewProducts/Product";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ListProductsByDate, getProducts } from "../../utils/graphqlFunctions";
+import {
+  ListProductsByDate,
+  getProducts,
+  getRate,
+} from "../../utils/graphqlFunctions";
 import { Colors } from "../../utils/colors";
 
 const NewProducts = () => {
@@ -20,6 +24,30 @@ const NewProducts = () => {
   );
 
   console.log("data", data);
+
+  // ✅ OPCIÓN 1: Usar React Query (Recomendado)
+  const {
+    data: exchangeRateData,
+    isLoading: ratesLoading,
+    isError: ratesError,
+    error: ratesErrorDetails,
+  } = useQuery({
+    queryKey: ["exchange-rates", "main"],
+    queryFn: () => getRate("main"),
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    cacheTime: 10 * 60 * 1000, // 10 minutos
+    retry: 2,
+    // Valores por defecto en caso de error
+    onError: (error) => {
+      console.error("Error cargando tasas:", error);
+    },
+  });
+
+  // ✅ Obtener valores con fallback
+  const currentRates = {
+    tasaOficial: exchangeRateData?.tasaOficial || 36.5,
+    tasaParalelo: exchangeRateData?.tasaParalelo || 45.2,
+  };
 
   // Filtro manual aplicado a la data
   const productList = data?.filter(
@@ -95,6 +123,8 @@ const NewProducts = () => {
             name={item.name}
             description={item.description}
             price={item.price}
+            tasaParalelo={currentRates.tasaParalelo}
+            tasaOficial={currentRates.tasaOficial}
           />
         </Link>
       ))
